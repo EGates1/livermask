@@ -1,11 +1,11 @@
 SHELL := /bin/bash
-ROOTDIR=/rsrch1/ip/dtfuentes/github/livermask
+ROOTDIR=/rsrch1/ip/egates1/github/livermask
 #-include $(ROOTDIR)/hcckfold005.makefile
 #-include $(ROOTDIR)/hccnormkfold005.makefile
 #-include $(ROOTDIR)/hccvolkfold005.makefile
 #-include $(ROOTDIR)/hccvolnorm512kfold005.makefile
 #-include $(ROOTDIR)/hccvolnorm256kfold005.makefile
--include $(ROOTDIR)/hccroinorm384kfold005.makefile
+-include $(ROOTDIR)/rplm256kfold005.makefile
 WORKDIR=$(TRAININGROOT)/ImageDatabase
 DATADIR=$(TRAININGROOT)/datalocation/train
 mask:        $(addprefix $(WORKDIR)/,$(addsuffix /unet/mask.nii.gz,$(UIDLIST)))

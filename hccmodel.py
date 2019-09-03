@@ -85,12 +85,14 @@ parser.add_option("--numepochs",
 (options, args) = parser.parse_args()
 
 # current datasets
-trainingdictionary = {'hcc':{'dbfile':'/rsrch1/ip/dtfuentes/github/RandomForestHCCResponse/datalocation/trainingdata.csv','rootlocation':'/rsrch1/ip/dtfuentes/github/RandomForestHCCResponse'},
-                      'hccnorm':{'dbfile':'/rsrch1/ip/dtfuentes/github/RandomForestHCCResponse/datalocation/trainingnorm.csv','rootlocation':'/rsrch1/ip/dtfuentes/github/RandomForestHCCResponse'},
-                      'hccvol':{'dbfile':'/rsrch1/ip/dtfuentes/github/RandomForestHCCResponse/datalocation/tumordata.csv','rootlocation':'/rsrch1/ip/dtfuentes/github/RandomForestHCCResponse'},
-                      'hccvolnorm':{'dbfile':'/rsrch1/ip/dtfuentes/github/RandomForestHCCResponse/datalocation/tumornorm.csv','rootlocation':'/rsrch1/ip/dtfuentes/github/RandomForestHCCResponse'},
-                      'hccroinorm':{'dbfile':'/rsrch1/ip/dtfuentes/github/RandomForestHCCResponse/datalocation/tumorroi.csv','rootlocation':'/rsrch1/ip/dtfuentes/github/RandomForestHCCResponse'},
-                      'crc':{'dbfile':'./crctrainingdata.csv','rootlocation':'/rsrch1/ip/jacctor/LiTS/LiTS' }}
+trainingdictionary = {'rplm':{'dbfile':'/rsrch1/ip/egates1/HistoricalRadPath/LandmarkTrainingData/trainingdataLandmark_t.csv','rootlocation':'/rsrch1/ip/egates1/HistoricalRadPath/LandmarkTrainingData'}#,
+#                      'hcc':{'dbfile':'/rsrch1/ip/dtfuentes/github/RandomForestHCCResponse/datalocation/trainingdata.csv','rootlocation':'/rsrch1/ip/dtfuentes/github/RandomForestHCCResponse'},
+#                      'hccnorm':{'dbfile':'/rsrch1/ip/dtfuentes/github/RandomForestHCCResponse/datalocation/trainingnorm.csv','rootlocation':'/rsrch1/ip/dtfuentes/github/RandomForestHCCResponse'},
+#                      'hccvol':{'dbfile':'/rsrch1/ip/dtfuentes/github/RandomForestHCCResponse/datalocation/tumordata.csv','rootlocation':'/rsrch1/ip/dtfuentes/github/RandomForestHCCResponse'},
+#                      'hccvolnorm':{'dbfile':'/rsrch1/ip/dtfuentes/github/RandomForestHCCResponse/datalocation/tumornorm.csv','rootlocation':'/rsrch1/ip/dtfuentes/github/RandomForestHCCResponse'},
+#                      'hccroinorm':{'dbfile':'/rsrch1/ip/dtfuentes/github/RandomForestHCCResponse/datalocation/tumorroi.csv','rootlocation':'/rsrch1/ip/dtfuentes/github/RandomForestHCCResponse'},
+#                      'crc':{'dbfile':'./crctrainingdata.csv','rootlocation':'/rsrch1/ip/jacctor/LiTS/LiTS' }
+                      }
 
 # options dependency 
 options.dbfile       = trainingdictionary[options.databaseid]['dbfile']
@@ -114,7 +116,9 @@ def GetDataDictionary():
   names = [description[0] for description in cursor.description]
   sqlStudyList = [ dict(zip(names,xtmp)) for xtmp in cursor ]
   for row in sqlStudyList :
-       CSVDictionary[int( row['dataid'])]  =  {'image':row['image'], 'label':row['label'], 'uid':"%s" %row['uid']}  
+#    print("Row of sqlStudyList")
+#    print(row)
+    CSVDictionary[int( row['dataid'])]  =  {'image':row['image'], 'label':row['label'], 'uid':"%s" %row['uid']}  
   return CSVDictionary 
 
 # setup kfolds
@@ -269,6 +273,7 @@ elif (options.builddb):
   totalnslice = 0 
   for idrow in databaseinfo.keys():
     row = databaseinfo[idrow ]
+    print("idrow: " + str(idrow))
     imagelocation = '%s/%s' % (options.rootlocation,row['image'])
     truthlocation = '%s/%s' % (options.rootlocation,row['label'])
 
@@ -851,6 +856,8 @@ elif (options.traintumor):
     liver = np.max(y_train_one_hot[:,:,:,1:-1], axis=3)
   elif( options.databaseid == 'crc'):
     liver = np.max(y_train_one_hot[:,:,:,1:], axis=3)
+  elif( options.databaseid == 'rplm'):
+    liver = np.max(y_train_one_hot[:,:,:,1:-1], axis=3) #actually brain mask, needs brain as label 1
   else:
     raise("unknown  dataset")
   y_train_one_hot[:,:,:,1]=liver
